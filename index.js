@@ -1,9 +1,32 @@
 import inquirer from 'inquirer';
 import pg from 'pg';
+import express from 'express';
 const { Pool } = pg;
 
-const dbPool = new Pool;
+const app = express();
 
+const dbPool = new Pool 
+({
+    user: process.env.DB_USER,
+    password: process.env.DB_PASS,
+    host: 'localhost',
+    port: 5432,
+});
+
+const makeConnection = async () => {
+    try {
+        await dbPool.connect();
+        console.log('Connected to database');
+    } catch (err) {
+        console.error(err);
+    }
+}
+
+await makeConnection();
+
+//middleware stuff
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 
 function empTracking () {
     inquirer.prompt([
@@ -134,6 +157,7 @@ function empTracking () {
             });
         } else {
             dbPool.end();
+            return;
         }
     });
 }
