@@ -1,0 +1,24 @@
+{
+  "name": "sql-employee-terminal",
+  "version": "1.0.0",
+  "description": "## Your Task",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/Eldrish-Ramos/sql-employee-terminal.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/Eldrish-Ramos/sql-employee-terminal/issues"
+  },
+  "homepage": "https://github.com/Eldrish-Ramos/sql-employee-terminal#readme",
+  "dependencies": {
+    "inquirer": "^12.4.2",
+    "pg": "^8.13.3"
+  }
+}
