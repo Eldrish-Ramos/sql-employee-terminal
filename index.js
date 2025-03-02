@@ -157,7 +157,7 @@ function empTracking () {
             });
         } else {
             dbPool.end();
-            return;
+            exit();
         }
     });
 }
