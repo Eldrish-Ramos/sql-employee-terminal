@@ -1,7 +1,10 @@
 import inquirer from 'inquirer';
 import pg from 'pg';
 import express from 'express';
+import dotenv from 'dotenv';
 const { Pool } = pg;
+
+dotenv.config();
 
 const app = express();
 
@@ -17,6 +20,7 @@ const makeConnection = async () => {
     try {
         await dbPool.connect();
         console.log('Connected to database');
+        empTracking();
     } catch (err) {
         console.error(err);
     }
@@ -48,21 +52,21 @@ function empTracking () {
     ])
     .then((answers) => {
         if(answers.prompt === 'View All Departments') {
-            dbPool.query('SELECT * FROM department', (err, res) => {
+            dbPool.query('SELECT * FROM departments', (err, res) => {
                 if(err) throw err;
                 console.log(res.rows);
                 empTracking();
             });
         } else if (answers.prompt === 'View All Roles') {
-            dbPool.query('SELECT * FROM role', (err, res) => {
+            dbPool.query('SELECT * FROM roles', (err, res) => {
                 if(err) throw err;
                 console.log(res.rows);
                 empTracking();
             });
         } else if (answers.prompt === 'View All Employees') {
-            dbPool.query('SELECT * FROM employee', (err, res) => {
+            dbPool.query('SELECT * FROM employees', (err, res) => {
                 if(err) throw err;
-                console.log(res.rows);
+                dbPool.query('SELECT * FROM roles');
                 empTracking();
             });
         } else if (answers.prompt === 'Add Employee') {
@@ -89,7 +93,7 @@ function empTracking () {
                 }
             ])
             .then((answers) => {
-                dbPool.query('INSERT INTO employee (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.manager_id], (err, res) => {
+                dbPool.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.manager_id], (err, res) => {
                     if(err) throw err;
                     console.log('Employee added');
                     empTracking();
@@ -109,7 +113,7 @@ function empTracking () {
                 }
             ])
             .then((answers) => {
-                dbPool.query('UPDATE employee SET role_id = $1 WHERE id = $2', [answers.role_id, answers.employee_id], (err, res) => {
+                dbPool.query('UPDATE employees SET role_id = $1 WHERE id = $2', [answers.role_id, answers.employee_id], (err, res) => {
                     if(err) throw err;
                     console.log('Employee role updated');
                     empTracking();
@@ -134,7 +138,7 @@ function empTracking () {
                 }
             ])
             .then((answers) => {
-                dbPool.query('INSERT INTO role (title, salary, department_id) VALUES ($1, $2, $3)', [answers.title, answers.salary, answers.department_id], (err, res) => {
+                dbPool.query('INSERT INTO roles (title, salary, department_id) VALUES ($1, $2, $3)', [answers.title, answers.salary, answers.department_id], (err, res) => {
                     if(err) throw err;
                     console.log('Role added');
                     empTracking();
@@ -149,7 +153,7 @@ function empTracking () {
                 }
             ])
             .then((answers) => {
-                dbPool.query('INSERT INTO department (name) VALUES ($1)', [answers.name], (err, res) => {
+                dbPool.query('INSERT INTO departments (name) VALUES ($1)', [answers.name], (err, res) => {
                     if(err) throw err;
                     console.log('Department added');
                     empTracking();
@@ -162,5 +166,3 @@ function empTracking () {
         }
     });
 }
-
-empTracking();
