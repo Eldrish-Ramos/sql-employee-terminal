@@ -157,6 +157,7 @@ function empTracking () {
             });
         } else {
             dbPool.end();
+            //Error, figure out how to properly close the connection
             exit();
         }
     });
