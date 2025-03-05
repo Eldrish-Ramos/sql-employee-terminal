@@ -43,7 +43,6 @@ function empTracking () {
                 'View All Departments',
                 'View All Roles',
                 'Add Employee',
-                'Update Employee Role',
                 'Add Role',
                 'Add Department',
                 'Quit'
@@ -54,21 +53,26 @@ function empTracking () {
         if(answers.prompt === 'View All Departments') {
             dbPool.query('SELECT * FROM departments', (err, res) => {
                 if(err) throw err;
-                console.log(res.rows);
+                console.log('\n');
+                console.table(res.rows);
                 empTracking();
             });
         } else if (answers.prompt === 'View All Roles') {
+            console.log('\n');
             dbPool.query('SELECT * FROM roles', (err, res) => {
                 if(err) throw err;
-                console.log(res.rows);
+                console.log('\n');
+                console.table(res.rows);
                 empTracking();
             });
         } else if (answers.prompt === 'View All Employees') {
             dbPool.query('SELECT * FROM employees', (err, res) => {
-                if(err) throw err;
-                dbPool.query('SELECT * FROM roles');
+                        if(err) throw err;
+                        console.log('\n');
+                        console.table(res.rows);
+                        empTracking();
+                    });
                 empTracking();
-            });
         } else if (answers.prompt === 'Add Employee') {
             inquirer.prompt([
                 {
@@ -96,26 +100,6 @@ function empTracking () {
                 dbPool.query('INSERT INTO employees (first_name, last_name, role_id, manager_id) VALUES ($1, $2, $3, $4)', [answers.first_name, answers.last_name, answers.role_id, answers.manager_id], (err, res) => {
                     if(err) throw err;
                     console.log('Employee added');
-                    empTracking();
-                });
-            });
-        } else if (answers.prompt === 'Update Employee Role') {
-            inquirer.prompt([
-                {
-                    type: 'input',
-                    name: 'employee_id',
-                    message: 'Enter the employee\'s ID'
-                },
-                {
-                    type: 'input',
-                    name: 'role_id',
-                    message: 'Enter the new role ID'
-                }
-            ])
-            .then((answers) => {
-                dbPool.query('UPDATE employees SET role_id = $1 WHERE id = $2', [answers.role_id, answers.employee_id], (err, res) => {
-                    if(err) throw err;
-                    console.log('Employee role updated');
                     empTracking();
                 });
             });
@@ -162,7 +146,7 @@ function empTracking () {
         } else {
             dbPool.end();
             //Error, figure out how to properly close the connection
-            exit();
+            process.exit();
         }
     });
 }
