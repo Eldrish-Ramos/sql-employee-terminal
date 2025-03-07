@@ -8,8 +8,7 @@ dotenv.config();
 
 const app = express();
 
-const dbPool = new Pool 
-({
+const dbPool = new Pool({
     user: process.env.DB_USER,
     password: process.env.DB_PASS,
     host: 'localhost',
@@ -58,7 +57,6 @@ function empTracking () {
                 empTracking();
             });
         } else if (answers.prompt === 'View All Roles') {
-            console.log('\n');
             dbPool.query('SELECT * FROM roles', (err, res) => {
                 if(err) throw err;
                 console.log('\n');
@@ -67,12 +65,11 @@ function empTracking () {
             });
         } else if (answers.prompt === 'View All Employees') {
             dbPool.query('SELECT * FROM employees', (err, res) => {
-                        if(err) throw err;
-                        console.log('\n');
-                        console.table(res.rows);
-                        empTracking();
-                    });
+                if(err) throw err;
+                console.log('\n');
+                console.table(res.rows);
                 empTracking();
+            });
         } else if (answers.prompt === 'Add Employee') {
             inquirer.prompt([
                 {
